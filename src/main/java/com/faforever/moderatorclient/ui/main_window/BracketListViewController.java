@@ -4,7 +4,6 @@ import com.faforever.moderatorclient.ui.Controller;
 import com.faforever.moderatorclient.ui.caches.SmallThumbnailCache;
 import com.faforever.moderatorclient.ui.data_cells.ListViewMapCell;
 import com.faforever.moderatorclient.ui.domain.MapPoolAssignmentFX;
-import com.faforever.moderatorclient.ui.domain.MapVersionFX;
 import com.faforever.moderatorclient.ui.domain.MatchmakerQueueMapPoolFX;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.FloatProperty;
@@ -21,7 +20,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Comparator;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -33,7 +31,7 @@ public class BracketListViewController implements Controller<VBox> {
 
     public TextField vetoTokensPerPlayerInput;
     public TextField maxTokensPerMapInput;
-    public TextField minimalMapsAllowedInput;
+    public TextField minimumMapsAfterVetoInput;
     @FXML VBox root;
     @FXML ListView<MapPoolAssignmentFX> mapListView;
 
@@ -118,34 +116,34 @@ public class BracketListViewController implements Controller<VBox> {
         listener.changed(property, property.get(), property.get());
     }
 
-    private void bindMinimalMapsAllowed(FloatProperty property) {
-        minimalMapsAllowedInput.textProperty().addListener((observable, oldValue, newValue) -> {
+    private void bindMinimumMapsAfterVeto(FloatProperty property) {
+        minimumMapsAfterVetoInput.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
                 float value = Float.parseFloat(newValue);
 
-                if (value < 1.0f) {
-                    throw new NumberFormatException("Minimal maps allowed must be not lower than 1.0");
+                if (value <= 0) {
+                    throw new NumberFormatException("Minimum maps after veto must be greater than 0");
                 }
                 String formattedValue = String.format(Locale.US, "%.2f", value);
-                if (!Objects.equals(minimalMapsAllowedInput.getText(), formattedValue)) {
-                    minimalMapsAllowedInput.setText(formattedValue);
+                if (!Objects.equals(minimumMapsAfterVetoInput.getText(), formattedValue)) {
+                    minimumMapsAfterVetoInput.setText(formattedValue);
                 }
                 if (!Objects.equals(property.get(), value)) {
                     property.set(value);
                 }
-                minimalMapsAllowedInput.setStyle("");
+                minimumMapsAfterVetoInput.setStyle("");
             } catch (NumberFormatException e) {
                 log.error(e.getMessage());
-                minimalMapsAllowedInput.setStyle("-fx-background-color: rgb(255,100,100)");
+                minimumMapsAfterVetoInput.setStyle("-fx-background-color: rgb(255,100,100)");
             }
         });
 
         ChangeListener<Number> listener = (observable, oldValue, newValue) -> {
             float value = newValue.floatValue();
             String formattedValue = String.format(Locale.US, "%.2f", value);
-            if (!Objects.equals(minimalMapsAllowedInput.getText(), formattedValue)) {
-                minimalMapsAllowedInput.setText(formattedValue);
-                minimalMapsAllowedInput.setStyle("");
+            if (!Objects.equals(minimumMapsAfterVetoInput.getText(), formattedValue)) {
+                minimumMapsAfterVetoInput.setText(formattedValue);
+                minimumMapsAfterVetoInput.setStyle("");
             }
         };
         property.addListener(listener);
@@ -161,6 +159,6 @@ public class BracketListViewController implements Controller<VBox> {
     public void bindVetoParams(MatchmakerQueueMapPoolFX bracket) {
         bindVetoTokensPerPlayer(bracket.vetoTokensPerPlayerProperty());
         bindMaxTokensPerMap(bracket.maxTokensPerMapProperty());
-        bindMinimalMapsAllowed(bracket.minimalMapsAllowedProperty());
+        bindMinimumMapsAfterVeto(bracket.minimumMapsAfterVetoProperty());
     }
 }

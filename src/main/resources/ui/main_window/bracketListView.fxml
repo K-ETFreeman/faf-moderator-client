@@ -22,8 +22,8 @@
             <TextField alignment="CENTER" prefWidth="40" fx:id="maxTokensPerMapInput"/>
          </HBox>
          <HBox spacing="10" alignment="CENTER">
-            <Label prefWidth="120" alignment="CENTER_RIGHT" text="minimal maps allowed"/>
-            <TextField alignment="CENTER" prefWidth="40" fx:id="minimalMapsAllowedInput"/>
+            <Label prefWidth="120" alignment="CENTER_RIGHT" text="min. maps after veto"/>
+            <TextField alignment="CENTER" prefWidth="40" fx:id="minimumMapsAfterVetoInput"/>
          </HBox>
       </VBox>
       <ListView fx:id="mapListView" minWidth="160.0" VBox.vgrow="ALWAYS" />
