@@ -1,11 +1,11 @@
 package com.faforever.moderatorclient.ui.domain;
 
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.FloatProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
@@ -14,7 +14,7 @@ public class MatchmakerQueueMapPoolFX extends AbstractEntityFX {
     private final DoubleProperty maxRating;
     private final IntegerProperty vetoTokensPerPlayer;
     private final IntegerProperty maxTokensPerMap;
-    private final FloatProperty minimumMapsAfterVeto;
+    private final DoubleProperty minimumMapsAfterVeto;
     private final ObjectProperty<MatchmakerQueueFX> matchmakerQueue;
     private final ObjectProperty<MapPoolFX> mapPool;
 
@@ -23,7 +23,7 @@ public class MatchmakerQueueMapPoolFX extends AbstractEntityFX {
         maxRating = new SimpleDoubleProperty();
         vetoTokensPerPlayer = new SimpleIntegerProperty();
         maxTokensPerMap = new SimpleIntegerProperty();
-        minimumMapsAfterVeto = new SimpleFloatProperty();
+        minimumMapsAfterVeto = new SimpleDoubleProperty();
         matchmakerQueue = new SimpleObjectProperty<>();
         mapPool = new SimpleObjectProperty<>();
     }
@@ -76,11 +76,11 @@ public class MatchmakerQueueMapPoolFX extends AbstractEntityFX {
         this.maxTokensPerMap.set(maxTokensPerMap);
     }
 
-    public float getMinimumMapsAfterVeto() {
+    public double getMinimumMapsAfterVeto() {
         return minimumMapsAfterVeto.get();
     }
 
-    public FloatProperty minimumMapsAfterVetoProperty() {
+    public DoubleProperty minimumMapsAfterVetoProperty() {
         return minimumMapsAfterVeto;
     }
 
