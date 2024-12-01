@@ -84,7 +84,7 @@ public class MatchmakerQueueMapPoolFX extends AbstractEntityFX {
         return minimumMapsAfterVeto;
     }
 
-    public void setMinimumMapsAfterVeto(float minimumMapsAfterVeto) {
+    public void setMinimumMapsAfterVeto(double minimumMapsAfterVeto) {
         this.minimumMapsAfterVeto.set(minimumMapsAfterVeto);
     }
 

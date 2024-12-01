@@ -67,7 +67,6 @@ public class LadderMapPoolController implements Controller<SplitPane> {
     public static final double MIN_MAP_SIZE_STEP = 1.25;
     private final MapService mapService;
     private final UiService uiService;
-    private final FafApiCommunicationService apiService;
     private final MatchmakerQueueMapPoolMapper matchmakerQueueMapPoolMapper;
     private final MapPoolAssignmentMapper mapPoolAssignmentMapper;
     private final LargeThumbnailCache largeThumbnailCache;
@@ -193,16 +192,7 @@ public class LadderMapPoolController implements Controller<SplitPane> {
         }
         uploadToDatabaseButton.setOnAction(event -> {
             for (MatchmakerQueueMapPoolFX bracketFX : bracketsFX) {
-                ElideNavigatorOnId<MatchmakerQueueMapPool> navigator = ElideNavigator.of(MatchmakerQueueMapPool.class)
-                        .id(bracketFX.getId());
-                MatchmakerQueueMapPool dto = matchmakerQueueMapPoolMapper.mapToDto(bracketFX);
-                dto.setMapPool(null);
-                dto.setCreateTime(null);
-                dto.setMinRating(null);
-                dto.setMaxRating(null);
-                dto.setMatchmakerQueue(null);
-                dto.setUpdateTime(null);
-                apiService.patch(navigator, dto);
+                mapService.patchBracket(bracketFX);
             }
 
             List<MapPoolAssignment> oldMapPoolAssignments = mapService.getListOfMapsInBrackets(brackets);

@@ -30,15 +30,13 @@ import lombok.extern.slf4j.Slf4j;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class BracketListViewController implements Controller<VBox> {
 
-    public Spinner<Integer> vetoTokensPerPlayerSpinner;
-    public Spinner<Integer> maxTokensPerMapSpinner;
-    public Spinner<Double> minimumMapsAfterVetoSpinner;
-    public CheckBox dynamicMaxTokensPerMapCheckBox;
-    public HBox maxTokensPerMapHBox;
-    @FXML
-    VBox root;
-    @FXML
-    ListView<MapPoolAssignmentFX> mapListView;
+    @FXML Spinner<Integer> vetoTokensPerPlayerSpinner;
+    @FXML Spinner<Integer> maxTokensPerMapSpinner;
+    @FXML Spinner<Double> minimumMapsAfterVetoSpinner;
+    @FXML CheckBox dynamicMaxTokensPerMapCheckBox;
+    @FXML HBox maxTokensPerMapHBox;
+    @FXML VBox root;
+    @FXML ListView<MapPoolAssignmentFX> mapListView;
 
     private final SmallThumbnailCache smallThumbnailCache;
 
@@ -64,24 +62,23 @@ public class BracketListViewController implements Controller<VBox> {
     public void bindVetoParams(MatchmakerQueueMapPoolFX bracket) {
         dynamicMaxTokensPerMapCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue){
-                log.debug(String.valueOf(bracket.maxTokensPerMapProperty().get()));
                 maxTokensPerMapSpinner.setDisable(true);
-                bracket.maxTokensPerMapProperty().set(0);
+                bracket.setMaxTokensPerMap(0);
             } else {
-                bracket.maxTokensPerMapProperty().set(1);
+                bracket.setMaxTokensPerMap(1);
                 maxTokensPerMapSpinner.setDisable(false);
             }
         });
 
-        dynamicMaxTokensPerMapCheckBox.setSelected(bracket.maxTokensPerMapProperty().get() == 0);
+        dynamicMaxTokensPerMapCheckBox.setSelected(bracket.getMaxTokensPerMap() == 0);
 
-        maxTokensPerMapSpinner.getValueFactory().setValue(bracket.maxTokensPerMapProperty().get());
-        maxTokensPerMapSpinner.valueProperty().addListener((observable, oldValue, newValue) -> bracket.maxTokensPerMapProperty().set(newValue));
+        maxTokensPerMapSpinner.getValueFactory().setValue(bracket.getMaxTokensPerMap());
+        maxTokensPerMapSpinner.valueProperty().addListener((observable, oldValue, newValue) -> bracket.setMaxTokensPerMap(newValue));
 
-        vetoTokensPerPlayerSpinner.getValueFactory().setValue(bracket.vetoTokensPerPlayerProperty().get());
-        vetoTokensPerPlayerSpinner.valueProperty().addListener((observable, oldValue, newValue) -> bracket.vetoTokensPerPlayerProperty().set(newValue));
+        vetoTokensPerPlayerSpinner.getValueFactory().setValue(bracket.getVetoTokensPerPlayer());
+        vetoTokensPerPlayerSpinner.valueProperty().addListener((observable, oldValue, newValue) -> bracket.setVetoTokensPerPlayer(newValue));
 
-        minimumMapsAfterVetoSpinner.getValueFactory().setValue(bracket.minimumMapsAfterVetoProperty().get());
-        minimumMapsAfterVetoSpinner.valueProperty().addListener((observable, oldValue, newValue) -> bracket.minimumMapsAfterVetoProperty().set(newValue));
+        minimumMapsAfterVetoSpinner.getValueFactory().setValue(bracket.getMinimumMapsAfterVeto());
+        minimumMapsAfterVetoSpinner.valueProperty().addListener((observable, oldValue, newValue) -> bracket.setMinimumMapsAfterVeto(newValue));
     }
 }
