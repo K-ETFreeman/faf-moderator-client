@@ -171,9 +171,9 @@ public class MapService {
                         .setMapPool(bracket.getMapPool())
                         .setMaxRating(bracket.getMaxRating())
                         .setMinRating(bracket.getMinRating())
-                        .setVetoTokensPerPlayer(bracketFX.getVetoTokensPerPlayer())
-                        .setMaxTokensPerMap(bracketFX.getMaxTokensPerMap())
-                        .setMinimumMapsAfterVeto((float) bracketFX.getMinimumMapsAfterVeto())
+                        .setVetoTokensPerPlayer(bracket.getVetoTokensPerPlayer())
+                        .setMaxTokensPerMap(bracket.getMaxTokensPerMap())
+                        .setMinimumMapsAfterVeto(bracket.getMinimumMapsAfterVeto())
                         .setId(bracket.getId()));
     }
 
