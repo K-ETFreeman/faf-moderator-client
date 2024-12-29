@@ -191,10 +191,6 @@ public class LadderMapPoolController implements Controller<SplitPane> {
             bindSelectedMapPropertyToAddRemoveButtons(bracketAssignments, addBracketController, bracketFX.getMapPool());
         }
         uploadToDatabaseButton.setOnAction(event -> {
-            for (MatchmakerQueueMapPoolFX bracketFX : bracketsFX) {
-                mapService.patchBracket(bracketFX);
-            }
-
             List<MapPoolAssignment> oldMapPoolAssignments = mapService.getListOfMapsInBrackets(brackets);
             List<MapPoolAssignmentFX> oldMapPoolAssignmentsFX = mapPoolAssignmentMapper.mapToFX(oldMapPoolAssignments);
             List<MapPoolAssignmentFX> bracketMapPoolAssignments = bracketLists.stream()
@@ -211,6 +207,23 @@ public class LadderMapPoolController implements Controller<SplitPane> {
                             .anyMatch(assignmentFX -> Objects.equals(mapPoolAssignment, assignmentFX)
                                     && !mapPoolAssignment.getWeight().equals(assignmentFX.getWeight())))
                     .collect(Collectors.toList());
+
+            StringBuilder errorMessage = new StringBuilder();
+            for (MatchmakerQueueMapPoolFX bracketFX : bracketsFX) {
+                int mapCount = (int) bracketMapPoolAssignments.stream().filter(mapPoolAssignmentFX -> bracketFX.getMapPool().getId().equals(mapPoolAssignmentFX.getMapPool().getId())).count();
+                if (!isBracketVetoesSetCorrectly(bracketFX, mapCount)) {
+                    errorMessage.append("Wrong veto settings for bracket \"").append(getBracketRatingString(bracketFX)).append("\"\n");
+                }
+            }
+
+            if (!errorMessage.isEmpty()) {
+                ViewHelper.errorDialog("Operation is cancelled", errorMessage.toString());
+                return;
+            }
+
+            for (MatchmakerQueueMapPoolFX bracketFX : bracketsFX) {
+                mapService.patchBracket(bracketFX);
+            }
             mapService.postMapPoolAssignments(mapPoolAssignmentMapper.mapToDTO(newMapPoolAssignments));
             mapService.patchMapPoolAssignments(mapPoolAssignmentMapper.mapToDTO(changedMapPoolAssignments));
             mapService.deleteMapPoolAssignments(mapPoolAssignmentMapper.mapToDTO(removedMapPoolAssignments));
@@ -265,6 +278,21 @@ public class LadderMapPoolController implements Controller<SplitPane> {
                 selectionModel.clearSelection();
             }
         }));
+    }
+
+    private boolean isBracketVetoesSetCorrectly(MatchmakerQueueMapPoolFX bracket, int mapCount) {
+        double M = bracket.getMinimumMapsAfterVeto();
+        int tokensPerPlayer = bracket.getVetoTokensPerPlayer();
+        int teamSize = bracket.getMatchmakerQueue().getTeamSize();
+        int maxTokensPerMap = bracket.getMaxTokensPerMap();
+
+        if (maxTokensPerMap == 0) {
+            return mapCount > M;
+        } else {
+            int totalPlayers = teamSize * 2;
+            int totalVetoPower = totalPlayers * tokensPerPlayer / maxTokensPerMap;
+            return totalVetoPower <= mapCount - M;
+        }
     }
 
     private void bindSelectedMapPropertyToAddRemoveButtons(ObservableList<MapPoolAssignmentFX> mapList, AddBracketController controller, MapPoolFX bracketPool) {
